@@ -285,7 +285,7 @@ class Generator(Device):
 
         self.rho_1 = self.q_max - self.tau_1 * self.p_plus
         self.rho_2 = self.q_min - self.tau_2 * self.p_plus
-
+    ## the map function here in device is critial for generator to set constrains of action space.
     def map_pq(self, p, q):
         """
         Map (p, q) to the closest (P, Q) feasible power injection point.
@@ -504,6 +504,7 @@ class StorageUnit(Device):
         return
 
     def map_pq(self, p, q, delta_t):
+        ## that is the most important part for me that how the action is cut into inequality constrains
         """
         Map (p, q) to the closest (P, Q) feasible power injection point.
 
@@ -566,6 +567,6 @@ class StorageUnit(Device):
             self.soc -= delta_t * self.eff * self.p
         else:
             self.soc -= delta_t * self.p / self.eff
-
+        # why in here still need to clip again, does this influence the probability?
         # Clip the new state of charge to be in [soc_min, soc_max].
         self.soc = np.clip(self.soc, self.soc_min, self.soc_max)
